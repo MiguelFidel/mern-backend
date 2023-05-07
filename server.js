@@ -22,7 +22,6 @@ const userRouter = require('./routes/user');
 
 app.use('/user', userRouter);
 
-
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
 });

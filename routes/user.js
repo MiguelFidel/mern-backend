@@ -1,5 +1,7 @@
 const router = require('express').Router();
 let User = require('../models/user.model');
+const upload = require("../controller/photoController");
+const singleUpload = upload.single("image");
 
 router.route('/').get((req,res) => {
     User.find()
@@ -7,15 +9,36 @@ router.route('/').get((req,res) => {
     .catch(err => res.status(400).json('Error: ' + err))
 })
 
+router.route("/upload/:id").post((req, res) => {
+    const uid = req.params.id;
+  
+    singleUpload(req, res, function (err) {
+      if (err) {
+        return res.json({
+          success: false,
+          errors: {
+            title: "Image Upload Error",
+            detail: err.message,
+            error: err,
+          },
+        });
+      }
+  
+      let update = { photo: req.file.location };
+
+      User.findByIdAndUpdate(uid, update, { new: true })
+      .then((user) => res.status(200).json({ success: true, user: user }))
+      .catch((err) => res.status(400).json({ success: false, error: err }));
+    });
+  });
+
 router.route('/add').post((req,res) => {
     const fname = req.body.fname;
     const lname = req.body.lname;
     const email = req.body.email;
     const number = req.body.number;
     const address = req.body.address;
-    const photo = req.body.photo;
-    
-    
+    const photo = null;
 
     const newUser = new User({
         fname,
@@ -46,7 +69,6 @@ router.route('/update/:id').post((req,res) => {
         user.email = req.body.email;
         user.number = req.body.number;
         user.address = req.body.address;
-        user.photo = req.body.photo;
 
         user.save()
         .then(() => res.json("User updated"))
