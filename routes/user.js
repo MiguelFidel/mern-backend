@@ -38,7 +38,7 @@ router.route('/add').post((req,res) => {
     const email = req.body.email;
     const number = req.body.number;
     const address = req.body.address;
-    const photo = null;
+    const photo = "null";
 
     const newUser = new User({
         fname,
