@@ -7,11 +7,14 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors("http://localhost:3000/"));
+//app.use(cors("http://localhost:3000/"));
 app.use(express.json());
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000/");
     res.setHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS,DELETE");
+    if (req.method == "OPTIONS") {
+        return res.sendStatus(200);
+      }
     next();
   });
 
